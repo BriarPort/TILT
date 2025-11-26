@@ -1,0 +1,189 @@
+[
+  {
+    "id": 1,
+    "category": "Compliance (ISO)",
+    "criterion": "Does the vendor hold a valid, externally validated international security certification?",
+    "description": "ISO certification assessment",
+    "criticality": "Critical",
+    "points": 5,
+    "osint_source": "Trust Center / ISO Certificate Download",
+    "maturity_levels": {
+      "0": "No certification listed.",
+      "1": "Claims alignment (\"We follow ISO standards\") but no certificate.",
+      "2": "Certificate exists but is expired OR scope is limited to data centers only (not the SaaS app).",
+      "3": "Valid ISO 27001 Certificate covering the relevant service.",
+      "4": "ISO 27001 + ISO 27017 (Cloud Security) or ISO 27018 (Cloud Privacy).",
+      "5": "ISO 27001 + ISO 27701 (Privacy Information Management) + 9001."
+    }
+  },
+  {
+    "id": 2,
+    "category": "Compliance (SOC)",
+    "criterion": "Has the vendor undergone an independent AICPA service organization control audit?",
+    "description": "SOC audit assessment",
+    "criticality": "Critical",
+    "points": 5,
+    "osint_source": "Trust Center / Compliance Portal (NDA often req.)",
+    "maturity_levels": {
+      "0": "No SOC reporting available.",
+      "1": "Vendor relies solely on hosting provider's report (e.g., \"We run on AWS who is SOC 2\").",
+      "2": "SOC 3 (Public Summary) or SOC 2 Type I (Point-in-time snapshot) only.",
+      "3": "SOC 2 Type II Report (Covering a period of 6-12 months).",
+      "4": "SOC 2 Type II + \"Bridge Letter\" (covering the gap between audit period and now).",
+      "5": "SOC 2 Type II + SOC 2+ (Plus) or continuous audit dashboard availability."
+    }
+  },
+  {
+    "id": 3,
+    "category": "Compliance (CSA)",
+    "criterion": "Is the vendor transparently registered with the Cloud Security Alliance (STAR) registry?",
+    "description": "CSA STAR registry assessment",
+    "criticality": "Medium",
+    "points": 3,
+    "osint_source": "cloudsecurityalliance.org",
+    "maturity_levels": {
+      "0": "Not listed in the STAR Registry.",
+      "1": "Listed, but the CAIQ (Questionnaire) is over 2 years old.",
+      "2": "Self-Assessment (CAIQ updated within last 12 months).",
+      "3": "Self-Assessment + Cloud Controls Matrix (CCM) mapping provided.",
+      "4": "Third-Party Certification (STAR Certification or Attestation).",
+      "5": "Continuous Monitoring (Automated security transparency)."
+    }
+  },
+  {
+    "id": 4,
+    "category": "Identity & Access (SSO)",
+    "criterion": "What mechanisms are available to integrate with our corporate identity providers?",
+    "description": "SSO integration assessment",
+    "criticality": "Critical",
+    "points": 5,
+    "osint_source": "Pricing Page (look for \"Enterprise\" column)",
+    "maturity_levels": {
+      "0": "Username & Password only.",
+      "1": "Social Login only (e.g., \"Sign in with Google/GitHub\" - non-managed).",
+      "2": "Proprietary SSO (Vendor's own ecosystem only).",
+      "3": "SAML/OIDC SSO Available (But requires expensive \"Enterprise\" upgrade).",
+      "4": "SAML/OIDC SSO Included in standard business licensing.",
+      "5": "Just-in-Time (JIT) Provisioning + SCIM Support for automated onboarding/offboarding."
+    }
+  },
+  {
+    "id": 5,
+    "category": "Authentication Strength (MFA)",
+    "criterion": "How strictly can we enforce Multi-Factor Authentication on our user accounts?",
+    "description": "MFA enforcement assessment",
+    "criticality": "Critical",
+    "points": 5,
+    "osint_source": "Help Center / Support Docs",
+    "maturity_levels": {
+      "0": "MFA not supported.",
+      "1": "Optional MFA (User decides; SMS/Email based).",
+      "2": "Optional MFA (User decides; App/TOTP based).",
+      "3": "Enforced MFA (Admin can force all users to enroll).",
+      "4": "Enforced MFA + Contextual Access (Trusted Devices/IPs).",
+      "5": "Phishing-Resistant MFA Support (FIDO2 / WebAuthn / Hardware Keys) enforced."
+    }
+  },
+  {
+    "id": 6,
+    "category": "Visibility (Logging)",
+    "criterion": "To what extent can we monitor user activity and detect potential security incidents?",
+    "description": "Logging and monitoring assessment",
+    "criticality": "High",
+    "points": 4,
+    "osint_source": "Developer Docs / Features List",
+    "maturity_levels": {
+      "0": "No activity logs available.",
+      "1": "\"Recent Activity\" view for users only (no admin oversight).",
+      "2": "Admin Dashboard View (Non-exportable, short retention e.g., 30 days).",
+      "3": "Exportable CSV/JSON Logs (Manual download).",
+      "4": "Automated API Access / Webhooks for SIEM ingestion.",
+      "5": "Granular CRUD Logging (Create, Read, Update, Delete) + Real-time Streaming API."
+    }
+  },
+  {
+    "id": 7,
+    "category": "Data Encryption (At Rest)",
+    "criterion": "How is our data cryptographically protected while stored on the vendor's servers?",
+    "description": "Encryption at rest assessment",
+    "criticality": "High",
+    "points": 4,
+    "osint_source": "Security Whitepaper",
+    "maturity_levels": {
+      "0": "No mention of encryption.",
+      "1": "\"Data is encrypted\" (Vague statement, no technical specs).",
+      "2": "Standard Encryption (AES-128/256) with comingled keys.",
+      "3": "AES-256 with specific Key Management procedures defined in whitepaper.",
+      "4": "Customer Managed Keys (BYOK / CMEK) available.",
+      "5": "Client-Side Encryption / Zero Knowledge (Vendor technically cannot see data)."
+    }
+  },
+  {
+    "id": 8,
+    "category": "Data Sovereignty",
+    "criterion": "Can we control the geographic location where our data is processed and stored?",
+    "description": "Data residency assessment",
+    "criticality": "Medium",
+    "points": 3,
+    "osint_source": "Pricing Page / FAQ",
+    "maturity_levels": {
+      "0": "No information / Global distribution implied.",
+      "1": "General region stated (e.g., \"Servers are in the US\").",
+      "2": "Broad selection at signup (e.g., \"US\" vs \"EU\").",
+      "3": "Specific Data Center selection (e.g., \"AWS Frankfurt\").",
+      "4": "Contractual Guarantee of residency (Data will not leave X region).",
+      "5": "Sovereign Cloud offering (Data processed by nationals of that country only)."
+    }
+  },
+  {
+    "id": 9,
+    "category": "Supply Chain (Software)",
+    "criterion": "Does the vendor provide transparency regarding the software components they use?",
+    "description": "Software supply chain transparency",
+    "criticality": "Medium",
+    "points": 3,
+    "osint_source": "Trust Center / Security Page",
+    "maturity_levels": {
+      "0": "No information.",
+      "1": "High-level architecture diagram only.",
+      "2": "List of critical sub-processors (hosting providers) listed.",
+      "3": "Full list of sub-processors available and updated regularly.",
+      "4": "SBOM (Software Bill of Materials) available upon request.",
+      "5": "Real-time SBOM + VEX (Vulnerability Exploitability eXchange) published."
+    }
+  },
+  {
+    "id": 10,
+    "category": "Incident Transparency",
+    "criterion": "How transparent is the vendor regarding system uptime, outages, and historical incidents?",
+    "description": "Status page and incident transparency",
+    "criticality": "Low",
+    "points": 2,
+    "osint_source": "Footer / Status Page",
+    "maturity_levels": {
+      "0": "No status page.",
+      "1": "Static \"Traffic Light\" (Up/Down) page, current status only.",
+      "2": "Status page with recent history (last 30 days).",
+      "3": "Detailed Status Page with historical post-mortems and subscription alerts.",
+      "4": "Financially-backed SLA (Service Level Agreement) for uptime.",
+      "5": "Real-time metrics published + Public \"Trust Center\" showing live control status."
+    }
+  },
+  {
+    "id": 11,
+    "category": "Vulnerability Disclosure",
+    "criterion": "How easy is it for security researchers to report vulnerabilities to this vendor?",
+    "description": "Vulnerability disclosure process",
+    "criticality": "Low",
+    "points": 2,
+    "osint_source": "/security.txt or HackerOne",
+    "maturity_levels": {
+      "0": "No contact info found.",
+      "1": "General support email / \"Contact Us\" form.",
+      "2": "Specific \"security@\" email address listed.",
+      "3": "security.txt file present (RFC 9116 compliant).",
+      "4": "Public Bug Bounty Program (e.g., HackerOne, Bugcrowd).",
+      "5": "Bug Bounty with \"Safe Harbor\" clause explicitly protecting researchers."
+    }
+  }
+]

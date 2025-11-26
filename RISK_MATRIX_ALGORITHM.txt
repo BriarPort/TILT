@@ -1,0 +1,126 @@
+TILT Risk Matrix Algorithm
+===========================
+
+This explains how the risk matrix works, how we calculate likelihood, vulnerability, and impact, and how vendors get positioned on the graph. Written for future me who will forget why we did things this way.
+
+The risk matrix is a 5 by 5 grid where vendors appear as dots. The X axis is Impact, Y axis is Likelihood, and the colour represents Vulnerability percentage. This gives a visual representation of vendor risk.
+
+=========================================
+1. Y-AXIS (LIKELIHOOD) PLACEMENT
+=========================================
+
+The Y axis represents Likelihood from 1 to 5, which determines the vertical position of dots on the risk matrix. Higher likelihood means higher chance of breach, so dots near the top are riskier.
+
+Standard Assessment, 25 Questions
+
+The algorithm calculates average maturity score from all question answers on a 1 to 5 scale. We sum all answers and divide by number of answers.
+
+Then we invert the score to convert maturity to likelihood. The formula is likelihood equals max of 1, min of 5, 6 minus avgScore divided by 1.2.
+
+Higher maturity scores mean better security which means lower likelihood. Score 5 which is best gives likelihood around 1 which is lowest. Score 3 which is average gives likelihood around 3 which is medium. Score 1 which is worst gives likelihood around 5 which is highest.
+
+OSINT adjustment rules are important here. Likelihood is only affected by ransomware, which sets it to 5. Vulnerability is affected by SSL and DMARC warnings which indicate security posture. SSL expired sets vulnerability to at least 80 percent. DMARC missing sets vulnerability to at least 60 percent.
+
+Visual position is calculated as Y position equals likelihood divided by 5, times 100 percent from bottom. Bottom is Likelihood 1, top is Likelihood 5.
+
+Cloud Scorecard Assessment
+
+Likelihood is determined by total score thresholds. Score 45 to 55 which is Elite gives likelihood 2. Score 30 to 44 which is Standard gives likelihood 3. Score 15 to 29 which is Deficient gives likelihood 4. Score 0 to 14 which is Critical gives likelihood 5.
+
+OSINT adjustments work the same as standard assessment. Likelihood is only affected by ransomware which sets it to 5. Vulnerability is affected by SSL and DMARC. SSL expired sets vulnerability to at least 80 percent. DMARC missing sets vulnerability to at least 60 percent.
+
+Visual position is the same as standard assessment, likelihood divided by 5, times 100 percent from bottom.
+
+=========================================
+2. X-AXIS (IMPACT) PLACEMENT
+=========================================
+
+The X axis represents Impact from 1 to 5, which is determined by data classification level. This is straightforward mapping.
+
+Tier 1 which is Public gives Impact 1. Tier 2 which is Internal gives Impact 2. Tier 3 which is Confidential gives Impact 3 and is the default. Tier 4 which is Restricted gives Impact 4. Tier 5 which is Highly Restricted gives Impact 5.
+
+Visual position is calculated as X position equals impact divided by 5, times 100 percent from left. Left is Impact 1, right is Impact 5.
+
+Important note: Impact is determined solely by data classification level. Ransomware detection does not affect impact because it doesnt change data sensitivity. A breach doesnt make the data more sensitive, it just means the data might be exposed.
+
+=========================================
+3. VULNERABILITY PERCENTAGE
+=========================================
+
+The vulnerability percentage from 0 to 100 percent determines the colour of the dot on the matrix. Black means secure, bright blue means vulnerable. This gives a quick visual indicator of security posture.
+
+Standard Assessment
+
+The algorithm works like this. For each question, we normalise the maturity score by inverting it. Normalised equals 6 minus answer, divided by 5. Score 1 gives 1.0 which is 100 percent vulnerable. Score 5 gives 0.2 which is 20 percent vulnerable.
+
+Then we apply weight based on importance. Critical questions get weight 3. High questions get weight 2. Medium and Low questions get weight 1.
+
+We calculate weighted average as vulnerability equals sum of normalised score times weight, divided by sum of weights, times 100.
+
+Apply OSINT adjustments to vulnerability. If SSL expired, vulnerability equals max of calculated value and 80 percent. If DMARC missing, vulnerability equals max of calculated value and 60 percent. Otherwise use calculated value.
+
+Important note: Ransomware detection does not affect vulnerability percentage. It only affects likelihood. DMARC and SSL warnings affect vulnerability because they indicate security posture, not likelihood which is chance of breach. This is a key distinction.
+
+Result is an integer percentage from 0 to 100.
+
+Cloud Scorecard
+
+The algorithm calculates weighted score first. For each criterion, maturityScore is the score from 0 to 5 for that criterion. Points is the maximum points available for that criterion. WeightedPoints equals maturityScore divided by 5, times points.
+
+TotalScore is the sum of weightedPoints for all criteria. MaxScore is 55 which is total points if all are at level 5.
+
+Calculate vulnerability as inverse of score. Vulnerability equals 1 minus totalScore divided by maxScore, times 100. TotalScore 55 which is perfect gives 0 percent vulnerable. TotalScore 27.5 which is half gives 50 percent vulnerable. TotalScore 0 which is none gives 100 percent vulnerable.
+
+Apply adjustments to vulnerability. If SSL expired, vulnerability equals max of calculated value and 80 percent. If DMARC missing, vulnerability equals max of calculated value and 60 percent. If critical criterion missed, vulnerability equals 100 percent.
+
+Important note: Ransomware detection does not affect vulnerability percentage. It only affects likelihood. DMARC and SSL warnings affect vulnerability because they indicate security posture, not likelihood which is chance of breach.
+
+Result is an integer percentage from 0 to 100.
+
+=========================================
+4. VISUAL REPRESENTATION
+=========================================
+
+Dot colour is determined by vulnerability percentage using RGB. Blue value equals floor of vulnerability divided by 100, times 255. Colour is rgb 0, 0, blueValue.
+
+Range is 0 percent vulnerable gives rgb 0, 0, 0 which is black and secure. 50 percent vulnerable gives rgb 0, 0, 127 which is medium blue. 100 percent vulnerable gives rgb 0, 0, 255 which is bright blue and high risk.
+
+Dot position uses X position left equals impact divided by 5, times 100 percent. Y position bottom equals likelihood divided by 5, times 100 percent.
+
+Example: Impact 3 and Likelihood 3 gives centre of matrix at 50 percent left, 50 percent bottom. Impact 5 and Likelihood 5 gives top right corner at 100 percent left, 100 percent bottom.
+
+Matrix zones use a gradient background to show risk zones. Bottom left is low risk and green. Top right is high risk and red. Middle zones transition from yellow to orange.
+
+Risk score equals Impact times Likelihood. Risk 20 plus is Critical and red zone. Risk 12 to 19 is High and orange zone. Risk 6 to 11 is Medium and yellow zone. Risk less than 6 is Low and green zone.
+
+=========================================
+5. SUMMARY EQUATIONS
+=========================================
+
+Likelihood for Standard Assessment
+
+Likelihood equals clamp of 1 to 5, 6 minus avgMaturityScore divided by 1.2. If ransomware found, likelihood equals 5. Note that only ransomware affects likelihood. DMARC and SSL do NOT affect likelihood.
+
+Likelihood for Cloud Assessment
+
+Likelihood equals 2 if score 45 or more, 3 if score 30 or more, 4 if score 15 or more, else 5. If ransomware found, likelihood equals 5. Note that only ransomware affects likelihood. DMARC and SSL do NOT affect likelihood.
+
+Impact
+
+Impact equals data classification tier from 1 to 5. Note that ransomware does not affect impact because data sensitivity is unchanged.
+
+Vulnerability for Standard Assessment
+
+Normalised equals 6 minus maturityScore, divided by 5. Weighted equals sum of normalised times weight, divided by sum of weights. Vulnerability equals weighted times 100. If SSL expired, vulnerability equals max of vulnerability and 80. If DMARC missing, vulnerability equals max of vulnerability and 60.
+
+Note that ransomware does not affect vulnerability percentage, it only affects likelihood. DMARC and SSL warnings affect vulnerability because they are security posture indicators.
+
+Vulnerability for Cloud Assessment
+
+TotalScore equals sum of maturityScore divided by 5, times points. Vulnerability equals 1 minus totalScore divided by 55, times 100. If critical missed, vulnerability equals 100. Else if SSL expired, vulnerability equals max of vulnerability and 80. Else if DMARC missing, vulnerability equals max of vulnerability and 60.
+
+Note that ransomware does not affect vulnerability percentage, it only affects likelihood. DMARC and SSL warnings affect vulnerability because they are security posture indicators.
+
+Visual
+
+Colour equals rgb 0, 0, floor of vulnerability times 255 divided by 100. X position equals impact divided by 5, times 100 percent. Y position equals likelihood divided by 5, times 100 percent.

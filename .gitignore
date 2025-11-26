@@ -1,0 +1,60 @@
+######################
+# 1. DEPENDENCIES & BUILD OUTPUT (Required)
+######################
+
+# Node.js / React Frontend
+node_modules/
+/frontend/node_modules/
+/frontend/dist/
+.vite/
+npm-debug.log*
+yarn-error.log*
+
+# Python / FastAPI Backend
+# Virtual Environments
+venv/
+/backend/venv/
+# Compiled/Cache files
+__pycache__/
+*.pyc
+*.pyd
+*.so
+/backend/__pycache__/
+/backend/*.pyc
+
+# Distribution/Builds
+build/
+dist/
+*.egg-info/
+.coverage
+
+######################
+# 2. LOCAL DATA & SECRETS (Crucial for TILT)
+######################
+
+# Database Files
+tilt_data.db
+*.db
+*.db-shm
+*.db-wal
+
+# Configuration & Secrets
+.env
+.npmrc
+*.log
+
+######################
+# 3. OPERATING SYSTEM & IDEs
+######################
+
+# Linux
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code (or other IDEs)
+.vscode/
+.idea/

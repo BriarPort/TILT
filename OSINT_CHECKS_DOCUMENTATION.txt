@@ -1,0 +1,252 @@
+TILT OSINT Security Checks Documentation
+============================================
+
+This explains what the OSINT checks do, why they matter, and how they work. Written for future me who will forget all of this in a week.
+
+OSINT checks use publicly available information to validate vendor security without needing their cooperation. Think of it as automated security reconnaissance using stuff anyone can look up on the internet.
+
+=========================================
+1. RANSOMWARE LEAK DATABASE CHECK
+=========================================
+
+What it does
+
+Checks if a vendor name or domain shows up in public ransomware leak databases. Specifically searches the Ransomwatch GitHub repository which maintains a list of organisations that have appeared on ransomware group leak sites.
+
+Why this matters
+
+Ransomware groups publish victim lists when companies dont pay the ransom. This gives us early warning that a vendor has been breached and may have data exposed. Its basically a free early warning system.
+
+A vendor appearing in these databases suggests poor security controls, potential data exposure, and ongoing security remediation which diverts resources. This helps prioritise vendors for immediate review.
+
+From a compliance perspective, this demonstrates proactive vendor risk management and continuous monitoring for Tier 3 requirements. It supports informed decision making on vendor relationships.
+
+The Ransomwatch database is maintained by the community and updates automatically from GitHub. No subscription fees or API keys required, which is nice.
+
+How it works
+
+The algorithm fetches posts.json from the Ransomwatch GitHub repository. The URL is hardcoded because its a static file that gets updated regularly.
+
+We cache the JSON file locally with a 24 hour TTL. This reduces network requests and improves performance. If the network fails, we fall back to stale cache which is better than nothing.
+
+The search logic normalises vendor name and domain to lowercase and strips whitespace. Then it searches post titles for exact vendor name match, domain match, or fuzzy match for keywords longer than 3 characters. Returns True if any match found.
+
+We add a 500ms delay between requests to respect API limits and prevent overwhelming external services. This is probably overkill but better safe than sorry.
+
+Technical details
+
+Source is Ransomwatch GitHub, free and open source. Cache duration is 24 hours. We use stale cache if network is unavailable. Matching is case insensitive with fuzzy keyword matching. Performance is about 1 to 2 seconds with cache, 3 to 5 seconds on first run.
+
+Result impact
+
+If ransomware is found, we set likelihood to 5 which is maximum breach probability. This creates a Critical severity warning and the vendor automatically gets prioritised on the dashboard, shown first.
+
+Important note: Ransomware is the ONLY OSINT check that affects likelihood. Everything else affects vulnerability instead.
+
+=========================================
+2. SSL/TLS CERTIFICATE VALIDATION
+=========================================
+
+What it does
+
+Validates the SSL/TLS certificate for a vendors primary domain. Checks certificate validity, expiration timeline in days remaining, and connection security configuration.
+
+Assigns a grade A, B, C, or F based on expiration timeline. This follows standard certificate management practices.
+
+Why this matters
+
+Proper certificate management shows operational maturity. Expired or expiring certificates indicate poor IT operations and suggest potential gaps in security controls.
+
+From an operational risk perspective, expired certificates can lead to service disruption, man in the middle vulnerabilities, and browser warnings which hurt user trust. It also demonstrates lack of monitoring or automation.
+
+SSL/TLS is a fundamental security requirement according to NIST CSF 2.0 and other frameworks. Certificate management is basic security hygiene that shows a vendors attention to security basics.
+
+The early warning aspect is useful. We identify certificates expiring soon, less than 30 days, which allows proactive follow up before expiration and prevents service disruption from certificate failures.
+
+How it works
+
+The algorithm establishes an SSL connection to the domain on port 443. We create an SSL context with default settings, open a TCP connection to domain port 443, wrap the socket with SSL/TLS, and retrieve the peer certificate.
+
+We parse certificate expiration by extracting the notAfter field from the certificate. The date format is something like Oct 15 12:00:00 2024 GMT. We calculate days remaining until expiration.
+
+Grade assignment is based on days remaining. Grade A is 60 plus days remaining which is good. Grade B is 30 to 59 days which is acceptable. Grade C is 7 to 29 days which is a warning. Grade F is less than 7 days or expired which is critical.
+
+We cache results with a 5 minute TTL for SSL checks. This is frequent enough for monitoring but prevents excessive certificate lookups.
+
+Technical details
+
+Protocol is SSL/TLS handshake on port 443. Timeout is 5 seconds per connection. Grade thresholds are 60, 30, and 7 days. Cache duration is 5 minutes which is 300 seconds. Error handling returns Grade F on connection failure because if we cant connect, we assume the worst.
+
+Result impact
+
+Grade F creates a High severity warning and caps vulnerability at 80 percent minimum. This is because expired certificates indicate serious operational security issues.
+
+Grade C creates a Medium severity warning. Grades A and B have no warning because theyre acceptable.
+
+Certificate validation process
+
+We use socket.create_connection to connect to domain port 443 with a 5 second timeout. Then ssl.create_default_context wraps the socket. ssock.getpeercert extracts the notAfter field. We calculate days until expiration and assign a grade based on the timeline.
+
+=========================================
+3. DMARC RECORD CHECK
+=========================================
+
+What it does
+
+Checks if a domain has a DMARC policy configured. DMARC stands for Domain based Message Authentication, Reporting and Conformance. Its an email authentication protocol that helps prevent email spoofing and phishing attacks.
+
+DMARC is built on top of SPF and DKIM. SPF is a list of IP addresses allowed to send email from your domain. DKIM is a cryptographic signature that proves an email was sent by your domain and wasnt tampered with. DMARC tells receiving mail servers what to do if an email claiming to be from your domain fails SPF and DKIM checks.
+
+Why this matters
+
+DMARC prevents email spoofing, which means fake emails from the vendor domain. This reduces phishing attack vectors and protects against business email compromise attacks.
+
+From a security maturity perspective, DMARC implementation shows understanding of email security threats, proactive security controls, and operational security awareness. Its a basic security hygiene indicator.
+
+Without DMARC, vendors are vulnerable to email spoofing attacks, phishing campaigns impersonating them, and reputation damage from malicious emails. This could lead to compromised vendor communications.
+
+DMARC is industry best practice according to RFC 7489. Its recommended by cybersecurity frameworks and demonstrates vendor security awareness.
+
+Important context about false positives
+
+Some major companies like GitHub dont have DMARC on their primary domain because they dont send email from it. They use subdomains for email instead. If you check notifications.github.com, youll find proper DMARC configuration with p=reject policy which is the strongest possible.
+
+For this reason, we allow specifying DMARC enabled subdomains in the vendor settings. This prevents false positives for domains that follow this pattern.
+
+How it works
+
+The algorithm does a DNS TXT record lookup. We query DNS for _dmarc.domain, record type TXT, and look for a record starting with v=dmarc1.
+
+Validation parses the TXT record content and checks if it starts with v=dmarc1 which is the DMARC version identifier. Returns True if valid DMARC record found.
+
+We check specified subdomains first if provided, then fall back to the primary domain. This handles the GitHub style pattern where email comes from subdomains.
+
+Caching uses a 5 minute TTL for DNS queries. This reduces DNS lookup overhead and prevents repeated queries for the same domain.
+
+Technical details
+
+DNS query is _dmarc.domain TXT record. We use dnspython library, specifically dns.resolver. Validation checks for v=dmarc1 prefix. Cache duration is 5 minutes which is 300 seconds. Error handling returns False on DNS failure, assuming no DMARC.
+
+DNS lookup process
+
+We construct the query as _dmarc.domain. Then dns.resolver.resolve queries for TXT records. We parse TXT record strings and check if they start with v=dmarc1 case insensitive. Returns True or False.
+
+Result impact
+
+No DMARC creates a Medium severity warning AND increases vulnerability to at least 60 percent. This is because missing DMARC indicates email security weakness, affecting overall security posture.
+
+DMARC present means no warning, which is good practice. The warning message says No DMARC record found, email security risk.
+
+Vulnerability impact is that missing DMARC indicates email security weakness, which affects overall security posture. This is why it affects vulnerability, not likelihood.
+
+=========================================
+4. OSINT SCAN WORKFLOW
+=========================================
+
+Scan execution
+
+When a vendor OSINT scan is triggered, we need the primary domain which is required, vendor name which is optional and used for ransomware check, and OSINT URLs which are optional for additional context.
+
+The scan sequence runs ransomware check first using vendor name and domain. It searches the leak database with a 500ms delay after completion.
+
+Then SSL certificate check runs on the primary domain. It validates the certificate, checks expiration, with a 500ms delay after completion.
+
+Finally DMARC check runs on the primary domain. It queries DNS for DMARC record with no additional delay since its the final check.
+
+Result compilation creates a warnings array with all findings, an OSINT results object with structured data, and a timestamp for tracking.
+
+Storage puts warnings in vendor.osint_warnings as JSON, stores results in the vendor record, and updates vendor.updated_at timestamp.
+
+Rate limiting and performance
+
+We use a 500ms delay between checks to prevent API abuse. Caching reduces redundant queries. Total scan time is about 1 to 3 seconds with cache, 5 to 10 seconds on first run with no cache.
+
+Error handling
+
+Network failures fall back to cached data. DNS failures assume no DMARC as a fail safe. SSL failures assume invalid certificate which gives Grade F. Ransomware fetch failure uses stale cache if available. All errors are logged but dont block scan completion.
+
+Caching strategy
+
+Ransomware list uses a 24 hour file cache stored in ransom_cache.json. SSL certificates use a 5 minute in memory cache. DMARC records use a 5 minute in memory cache. Cache invalidation is time based TTL, time to live.
+
+Why caching matters
+
+It reduces external API load, improves scan performance, prevents rate limiting issues, and provides resilience through graceful degradation.
+
+=========================================
+5. WARNING SEVERITY LEVELS
+=========================================
+
+Critical severity
+
+Ransomware leak database match. Impact is maximum likelihood, 5, for breach probability. Action is immediate vendor review recommended. Dashboard shows red border and vendor appears first.
+
+High severity
+
+SSL certificate expired or expiring less than 7 days, which is Grade F. Impact is vulnerability capped at 80 percent minimum. Action is follow up with vendor on certificate management. Dashboard shows yellow or red indicators.
+
+Medium severity
+
+SSL certificate expiring 7 to 29 days, which is Grade C. No DMARC record found. Impact for DMARC missing is vulnerability at least 60 percent as a security posture indicator. SSL Grade C is warning flag only. Action is note for next assessment cycle. Dashboard shows yellow indicators.
+
+=========================================
+6. INTEGRATION WITH RISK CALCULATION
+=========================================
+
+OSINT results affect risk calculations in specific ways.
+
+Likelihood, which is the Y axis
+
+Ransomware found sets likelihood to 5 which is maximum. Other checks have no direct impact on likelihood. Rationale is that ransomware indicates active breach or high breach probability.
+
+Vulnerability, which determines the colour
+
+SSL expired, Grade F, sets vulnerability to at least 80 percent. DMARC missing sets vulnerability to at least 60 percent. Rationale is that SSL and DMARC issues indicate poor security posture and email security weaknesses.
+
+Note that both affect vulnerability which is security posture, not likelihood which is chance of breach. This is an important distinction.
+
+Impact, which is the X axis
+
+OSINT checks do NOT affect impact. Impact is determined by data classification level only. Rationale is that OSINT indicates breach probability, not data sensitivity.
+
+Dashboard prioritisation
+
+Vendors with OSINT warnings are shown first. Ransomware warnings get highest priority. Visual indicators include red borders and warning icons. This helps focus attention on highest risk vendors.
+
+=========================================
+7. DATA SOURCES & RELIABILITY
+=========================================
+
+Ransomware database
+
+Source is Ransomwatch GitHub, joshhighet slash ransomwatch. Update frequency is maintained by community and updated regularly. Reliability is high as its official leak site aggregation. Cost is free, open source. Coverage includes major ransomware groups like LockBit, BlackCat, and others.
+
+SSL certificates
+
+Source is direct SSL/TLS handshake with vendor domain. Update frequency is real time, checks live certificates. Reliability is high through direct validation. Cost is free, no API required. Coverage is any domain with HTTPS.
+
+DMARC records
+
+Source is public DNS records. Update frequency is real time through DNS queries. Reliability is high using standard DNS protocol. Cost is free, no API required. Coverage is any domain with DNS.
+
+=========================================
+8. FUTURE ENHANCEMENTS
+=========================================
+
+These are not currently implemented but could be useful later.
+
+Potential additional OSINT checks include SPF record validation for email authentication, DKIM record checking for email signing, security.txt file presence for responsible disclosure, Certificate Transparency logs for expired or revoked certs, HIBP Have I Been Pwned breach database, Shodan.io integration for exposed services scan, VirusTotal API for domain reputation, and CVE database scanning for known vulnerabilities.
+
+Considerations for future implementation include API key requirements for some services, rate limiting due to API quotas, cost implications for premium services, false positive management, and privacy considerations.
+
+=========================================
+9. SUMMARY
+=========================================
+
+OSINT checks provide automated, continuous security validation using free, publicly available data sources. No vendor cooperation is required. We get real time threat intelligence, objective security indicators, and compliance support for Tier 3 requirements.
+
+The three checks implemented provide a solid foundation. Ransomware leak detection shows active threat indicators. SSL certificate validation shows operational security. DMARC record checking shows email security posture.
+
+Together, these checks help identify vendors with active security incidents from ransomware, poor operational controls from expired SSL, and missing security basics from no DMARC.
+
+All checks are automated, cached for performance, and integrated with the risk calculation and dashboard prioritisation systems.

@@ -1,0 +1,195 @@
+TILT Dashboard
+==============
+
+A web application for managing third party cybersecurity risk assessments. Built with FastAPI and React, runs locally on your machine. This is basically a tool to help you figure out which vendors are risky and which ones are probably fine.
+
+What This Does
+==============
+
+TILT stands for The Inherited Liability Toolkit. Its a framework for assessing third party vendor security risk. This application implements that framework as a working dashboard.
+
+You add vendors, fill out security questionnaires, and the app calculates risk scores. It also does automated OSINT checks to see if vendors have been breached or have security issues. Everything gets visualised on a risk matrix so you can see at a glance which vendors need attention.
+
+The whole thing runs locally on your machine. No cloud services, no external dependencies beyond what you install. The database is SQLite, encrypted with a master password you set. This is designed for Tier 3 data, internal use only stuff like vendor lists and risk assessments.
+
+Why This Exists
+================
+
+Third party risk management is annoying. You need to assess vendors, track their security posture, and figure out which ones are actually risky. Most tools are expensive enterprise solutions that require subscriptions and API keys and all that nonsense.
+
+This is a free, open source alternative that runs on your machine. You control the data, you control the encryption, you control everything. Its built for small teams or individuals who need to do vendor risk assessments without the enterprise software overhead.
+
+How It Works
+============
+
+The application has two parts. The backend is FastAPI running on Python, handling database operations and risk calculations. The frontend is React with Vite, providing the user interface. They communicate over localhost using a REST API.
+
+When you add a vendor, you can choose between two assessment types. Standard assessment is a 25 question maturity based questionnaire aligned with NIST CSF 2.0. Cloud scorecard is a quick 11 question assessment for mass market cloud services like AWS or GitHub.
+
+The app calculates three scores for each vendor. Impact is based on data classification tier, 1 to 5. Likelihood is based on assessment answers, also 1 to 5. Vulnerability is a percentage from 0 to 100, based on how well they answered security questions.
+
+These scores get plotted on a risk matrix. X axis is Impact, Y axis is Likelihood, colour represents Vulnerability. Dots near the top right are high risk, dots near the bottom left are low risk. Simple visual representation of vendor risk.
+
+OSINT Integration
+=================
+
+The app does automated security checks using publicly available information. No API keys required, everything is free and open source.
+
+Ransomware check searches the Ransomwatch GitHub database to see if a vendor has appeared on ransomware leak sites. If they have, likelihood gets set to maximum because thats a pretty strong indicator of a breach.
+
+SSL certificate check validates the vendors domain certificate and checks expiration. Expired certificates indicate poor operational security, so vulnerability gets capped at 80 percent minimum.
+
+DMARC check looks for email security policies. Missing DMARC indicates email security weakness, so vulnerability gets set to at least 60 percent. This is a security posture indicator, not a breach indicator.
+
+You can specify DMARC enabled subdomains for vendors that send email from subdomains instead of the primary domain. This prevents false positives for companies like GitHub that use subdomains for email.
+
+All OSINT results are cached to prevent excessive API calls. Ransomware list is cached for 24 hours, SSL and DMARC checks are cached for 5 minutes. This keeps things fast while still being reasonably up to date.
+
+OSINT warnings can be acknowledged by the risk team. Once acknowledged, vendors still appear in the dashboard but detailed warning text is replaced with a brief acknowledgment message. This helps track which vendors have been reviewed.
+
+Security Architecture
+=====================
+
+The database is protected with a master password system. Password is hashed using Argon2, which is the best option because it resists GPU cracking attacks. The hash is stored in a separate file, not in the database itself.
+
+Currently using SQLite3 with password authentication. SQLCipher encryption is planned for production but not implemented yet. For now, the master password protects access but the database file itself isnt encrypted. This is fine for local use but consider SQLCipher if you need stronger protection.
+
+All API endpoints verify the master password before allowing access. No password, no data. Simple as that.
+
+Data is stored locally in SQLite. No cloud sync, no external services, no telemetry. Everything stays on your machine. This is by design, for privacy and security.
+
+Installation
+============
+
+You need Python 3.12 or later, Node.js, and npm. Check LINUX_SETUP.md for detailed setup instructions.
+
+Quick start is to run the startup script. It handles setting up the Python virtual environment, installing dependencies, and starting both frontend and backend servers.
+
+bash
+chmod +x run.sh
+./run.sh
+
+Frontend runs on http://localhost:3000, backend API runs on http://127.0.0.1:8000. API documentation is available at http://127.0.0.1:8000/docs if you want to see the endpoints.
+
+First time you run it, youll be prompted to set a master password. This password protects all your vendor data. Dont lose it, theres no password recovery. If you forget it, you lose access to the database. This is intentional, for security.
+
+Assessment Types
+================
+
+Standard Assessment
+
+25 questions covering security controls, policies, and practices. Each question has 5 maturity levels, from basic to advanced. Questions are weighted by importance, critical questions count more than low priority ones.
+
+Answers get converted to likelihood and vulnerability scores. Higher maturity means lower likelihood of breach and lower vulnerability percentage. The math is in RISK_MATRIX_ALGORITHM.txt if you want the details.
+
+Cloud Scorecard
+
+11 criteria for mass market cloud services. Each criterion has 6 maturity levels from 0 to 5. Some criteria are critical, missing those sets vulnerability to 100 percent regardless of other answers.
+
+Total score is out of 55 points. Score thresholds determine likelihood, with lower scores meaning higher likelihood. This is a quick assessment, not as detailed as the standard questionnaire.
+
+Risk Matrix
+===========
+
+The risk matrix is a 5 by 5 grid visualising vendor risk. Each vendor appears as a dot positioned by Impact and Likelihood, coloured by Vulnerability.
+
+Background uses a gradient to show risk zones. Bottom left is green for low risk, top right is red for critical risk. Middle zones transition through yellow and orange.
+
+Risk score is Impact times Likelihood. Scores 20 and above are critical, 12 to 19 are high, 6 to 11 are medium, below 6 is low. The colour coding makes it easy to spot high risk vendors at a glance.
+
+Vendors with OSINT warnings appear first in the dashboard, prioritised for review. Ransomware warnings get highest priority because those indicate active security incidents. Warnings can be acknowledged to indicate theyve been reviewed by the risk team.
+
+File Structure
+==============
+
+frontend/ contains the React application. Components are in src/components/, API client is in src/api.js, risk calculation logic is in src/utils/riskCalculator.js.
+
+backend/ contains the FastAPI application. main.py has the REST endpoints, database.py handles database operations, risk_calculator.py does the math, osint_service.py runs the security checks.
+
+data/ contains question templates in JSON format. questions_standard.json has the 25 standard questions, questions_cloud.json has the cloud scorecard criteria.
+
+tilt_data.db is the SQLite database. This is where all vendor data, assessments, and settings are stored. Protected by master password.
+
+run.sh is the startup script. Handles environment setup and starts both servers.
+
+Documentation
+=============
+
+OSINT_CHECKS_DOCUMENTATION.txt explains the OSINT checks in detail. Why they matter, how they work, what they check, all that stuff. Written for future me who will forget how this works.
+
+RISK_MATRIX_ALGORITHM.txt explains the risk calculation algorithms. How likelihood is calculated, how vulnerability is calculated, how everything gets positioned on the matrix. Also written for future me.
+
+LINUX_SETUP.md has installation and setup instructions. If something breaks during setup, check there first.
+
+PROJECT_SUMMARY.md has a more formal overview if you want that instead of this casual description.
+
+Known Limitations
+==================
+
+SQLCipher encryption isnt implemented yet. Database is protected by password authentication but the file itself isnt encrypted. Fine for local use, consider SQLCipher for production.
+
+OSINT checks are basic. Ransomware, SSL, and DMARC checks work well, but theres no integration with premium services like VirusTotal or Shodan. Those would require API keys and potentially cost money.
+
+Export functionality isnt implemented. You can view everything in the dashboard but theres no PDF report generation or CSV export yet. This is planned but not done.
+
+Multi user support isnt implemented. One master password, one database, one user. If you need multiple users, youll need separate installations or wait for that feature.
+
+No scheduled scans. OSINT checks run when you trigger them manually. Automatic scheduled scans would be nice but arent implemented yet.
+
+Future Enhancements
+===================
+
+SQLCipher migration for production encryption. This is the big one, proper database encryption instead of just password protection.
+
+Export functionality, PDF reports and CSV exports. Being able to generate reports for stakeholders would be useful.
+
+Scheduled OSINT scans, automatic checks on a schedule instead of manual triggers.
+
+Multi user support with proper authentication and authorisation. Right now its single user only.
+
+More OSINT checks, integration with premium services if API keys are provided. VirusTotal, Shodan, CVE databases, all that stuff.
+
+Audit logging to track who did what and when. Useful for compliance and troubleshooting.
+
+License
+=======
+
+This is open source. Use it, modify it, distribute it, whatever. No warranty, use at your own risk. If something breaks, thats on you.
+
+The fonts used are Poppins from Google Fonts. Poppins is open source and free to use. Poppins Black is used for main headings, Poppins Thin for section titles and labels. If you redistribute this, check font licenses.
+
+Support
+=======
+
+If something breaks, check the documentation files first. OSINT_CHECKS_DOCUMENTATION.txt, RISK_MATRIX_ALGORITHM.txt, LINUX_SETUP.md, they all have useful information.
+
+The code has comments explaining the important bits. If youre trying to understand how something works, read the code and the comments.
+
+API documentation is at http://127.0.0.1:8000/docs when the backend is running. That shows all the endpoints and what they do.
+
+If you find bugs or have feature requests, open an issue. No promises on response time, this is a side project, but issues are welcome.
+
+Contributing
+=============
+
+Contributions are welcome. If you want to add features or fix bugs, go for it. Pull requests are appreciated.
+
+Code style should match the existing codebase. Python code uses standard conventions, React components are functional with hooks. Comments should explain why things work the way they do, not just what they do.
+
+Security improvements are especially welcome. If you find vulnerabilities or have suggestions for better security practices, definitely share those.
+
+Testing would be nice. The codebase doesnt have comprehensive tests yet, so if you want to add tests, that would be great. Unit tests for calculations, integration tests for API endpoints, all that stuff.
+
+Final Notes
+===========
+
+This is a working application but its not perfect. Some features are missing, some things could be better, but it works for its intended purpose. Vendor risk assessment without enterprise software overhead.
+
+The code is honest about its limitations. Comments mention workarounds and hacks where they exist. FIX ME comments indicate things that work but could be improved. This is intentional, transparency about technical debt.
+
+If you use this, understand that its designed for Tier 3 data, internal use only. Dont use it for highly sensitive information without proper security review. The master password system is good but not perfect, SQLCipher would be better.
+
+The risk calculations are based on standard frameworks like NIST CSF 2.0, but theyre simplified for practical use. Dont treat this as a complete security assessment tool, its a risk management tool. Use it to prioritise vendors for review, not as the final word on vendor security.
+
+Thats about it. Use it, break it, fix it, improve it. Have fun.
+

@@ -1,0 +1,378 @@
+[
+  {
+    "id": 1,
+    "nist_control": "GV.SC-03",
+    "category": "Govern",
+    "policy_ref": "Sec 4, Sec 10",
+    "question": "Is there a dedicated CISO or a senior executive formally accountable for the organization's security strategy?",
+    "weight": "Critical",
+    "maturity_levels": {
+      "1": "No specific individual or title responsible.",
+      "2": "Responsibility delegated to IT Manager/other function.",
+      "3": "Senior VP/Director formally accountable.",
+      "4": "Dedicated Head of Security or CISO reporting to CIO or CTO.",
+      "5": "Dedicated CISO reporting to CEO/Board."
+    }
+  },
+  {
+    "id": 2,
+    "nist_control": "GV.AT-03",
+    "category": "Govern",
+    "policy_ref": "Sec 5",
+    "question": "How frequently are employees trained on security and privacy policies, and what method is used?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "No formal, mandatory training program.",
+      "2": "Only during onboarding; not regularly reinforced.",
+      "3": "Annually via mandatory online modules/testing.",
+      "4": "Quarterly training via automated assessment tools.",
+      "5": "Quarterly training via simulated phishing/automated assessment tools."
+    }
+  },
+  {
+    "id": 3,
+    "nist_control": "PR.DS-04",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "What method do you use to encrypt our data at rest?",
+    "weight": "Critical",
+    "maturity_levels": {
+      "1": "No encryption / Just relying on network security",
+      "2": "Older/Deprecated Standards (e.g., 3DES, Blowfish).",
+      "3": "Storage platform default encryption (e.g., BitLocker, FileVault, M365 or Dropbox default)",
+      "4": "Platform-managed encryption with vendor-controlled keys (e.g., AWS KMS, Azure Key Vault)",
+      "5": "AES-256 (GCM/CCM) or equivalent modern standard."
+    }
+  },
+  {
+    "id": 4,
+    "nist_control": "PR.DS-04",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "What is the minimum version of TLS/SSL you enforce for data in transit?",
+    "weight": "Critical",
+    "maturity_levels": {
+      "1": "SSL, TLS 1.0, or not using encryption (HTTP)",
+      "2": "TLS 1.1 is still supported.",
+      "3": "TLS 1.2 or TLS 1.3.",
+      "4": "TLS 1.2 Minimum with HSTS enforced (Strict Transport Security).",
+      "5": "TLS 1.3 only."
+    }
+  },
+  {
+    "id": 5,
+    "nist_control": "PR.DS-04",
+    "category": "Protect",
+    "policy_ref": "Sec 5, Sec 9",
+    "question": "What process do you follow for the secure destruction of our data upon contract termination?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "Data is archived/retained for an indefinite period.",
+      "2": "Standard file system delete.",
+      "3": "Deletion is handled by the platform without an explicit CoD.",
+      "4": "Use certified secure deletion tools (e.g., secure wipe utility, shredding).",
+      "5": "Provide a Certificate of Destruction (CoD) confirming irreversible destruction (NIST SP 800-88 compliant)."
+    }
+  },
+  {
+    "id": 6,
+    "nist_control": "PR.AC-03",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "How do you monitor and control access to privileged accounts (e.g., administrator, root)?",
+    "weight": "Critical",
+    "maturity_levels": {
+      "1": "No special monitoring or controls for admin accounts.",
+      "2": "Privileged accounts are shared or are standard admin accounts with MFA.",
+      "3": "Elevated privileges require a formal, manual request and time limit.",
+      "4": "Dedicated PAM solution.",
+      "5": "Dedicated PAM solution and continuous monitoring/alerting."
+    }
+  },
+  {
+    "id": 7,
+    "nist_control": "PR.AC-03, PR.AC-04",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "Is Multi-Factor Authentication (MFA) mandatory for all access (especially privileged/remote)?",
+    "weight": "Critical",
+    "maturity_levels": {
+      "1": "MFA is not used.",
+      "2": "MFA is available, but optional for most users.",
+      "3": "MFA is mandatory for all Remote Access (VPN or Cloud) but optional for internal apps.",
+      "4": "Mandatory for privileged and remote access; highly recommended for all others.",
+      "5": "Mandatory for all staff and all system access (including privileged and remote)."
+    }
+  },
+  {
+    "id": 8,
+    "nist_control": "PR.AC-04",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "How quickly is system access revoked when an employee's role changes, or they leave the company?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "Manual process that takes several days.",
+      "2": "Revoked within 24 hours.",
+      "3": "Revoked within the same business day (4-8 hours).",
+      "4": "Immediate, automated revocation (within 1 hour) upon HR notification.",
+      "5": "Immediate, automated revocation, with device access restricted."
+    }
+  },
+  {
+    "id": 9,
+    "nist_control": "PR.AC-02",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "What methods are used to secure remote access to your corporate network?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "Unsecured RDP/remote desktop access directly exposed to the internet.",
+      "2": "VPN or remote desktop secured only by username/password.",
+      "3": "VPN with mandatory MFA and restricted IP ranges.",
+      "4": "Mandatory Zero Trust Network Access (ZTNA) or VPN with client certificate.",
+      "5": "Mandatory ZTNA or VPN with client certificate/MFA."
+    }
+  },
+  {
+    "id": 10,
+    "nist_control": "PR.AC-03",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "How do you enforce the Principle of Least Privilege (PoLP) for staff accessing our data?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "General access granted to all employees who need the system.",
+      "2": "Access granted generally to all staff in a department or team.",
+      "3": "Access is granted by specific job function, reviewed annually.",
+      "4": "Automated provisioning via Identity Management (IDM) based on role.",
+      "5": "Role-Based Access Control (RBAC) with regular, documented access reviews."
+    }
+  },
+  {
+    "id": 11,
+    "nist_control": "PR.VM-03",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "What is your target remediation timeline for critical and high-severity vulnerabilities?",
+    "weight": "Critical",
+    "maturity_levels": {
+      "1": "No formal patching schedule.",
+      "2": "Greater than 60 days for non-critical/manual patching only.",
+      "3": "Critical: <14 days; High: <60 days.",
+      "4": "Critical: <14 days; High: <30 days.",
+      "5": "Critical: <7 days; High: <30 days."
+    }
+  },
+  {
+    "id": 12,
+    "nist_control": "PR.AT-04, PR.AT-05",
+    "category": "Protect",
+    "policy_ref": "Sec 5",
+    "question": "What security tooling is used to detect malicious activity on your systems and network?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "Only a basic firewall and password on the systems.",
+      "2": "Basic, unmanaged Antivirus on systems.",
+      "3": "Centrally Managed Antivirus (Standard EPP) on all endpoints.",
+      "4": "Managed Antivirus (e.g., Defender ATP) and firewalls.",
+      "5": "Next-Gen Antivirus (NGAV) + EDR + Network IDS/IPS."
+    }
+  },
+  {
+    "id": 13,
+    "nist_control": "PR.IS-03",
+    "category": "Protect",
+    "policy_ref": "Sec 9",
+    "question": "Which independent security audit reports or certifications can you provide?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "No formal report, only internal assurance.",
+      "2": "Executive Summary of an annual external Penetration Test.",
+      "3": "Full External Penetration Test Report (with evidence of remediation).",
+      "4": "SOC 2 Type 1 / ISO 27001 (Self-Attested or In Progress)",
+      "5": "SOC 2 Type 2 / ISO 27001 / HIPAA (Certified by Accredited Registrar)."
+    }
+  },
+  {
+    "id": 14,
+    "nist_control": "RS.CO-02",
+    "category": "Respond",
+    "policy_ref": "Sec 10",
+    "question": "What is your contractual timeline (in hours) for notifying us upon the discovery of an incident impacting our data?",
+    "weight": "Critical",
+    "maturity_levels": {
+      "1": "more than 72 hours or \"As soon as reasonably possible.\"",
+      "2": "48-72 hours.",
+      "3": "Within 48 hours.",
+      "4": "24-48 hours.",
+      "5": "24 hours or less"
+    }
+  },
+  {
+    "id": 15,
+    "nist_control": "RS.CO-03",
+    "category": "Respond",
+    "policy_ref": "Sec 5, Sec 10",
+    "question": "Do you regularly test your incident response plan, and who participates in these exercises?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "No formal incident response plan or testing.",
+      "2": "Plan is documented but never formally tested.",
+      "3": "Annual desktop/tabletop exercise (key staff only).",
+      "4": "Annual desktop/tabletop exercise including senior executives.",
+      "5": "Annual full-scale simulation including senior executives."
+    }
+  },
+  {
+    "id": 16,
+    "nist_control": "GV.SC-02",
+    "category": "Govern",
+    "policy_ref": "Sec 6",
+    "question": "Do you disclose the use of any subcontractors (Fourth Parties) that handle our data, and do you grant us the right to audit or object to their use?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "No, we do not disclose our subcontractors.",
+      "2": "Disclosure upon request only; no right of refusal.",
+      "3": "Yes, critical Fourth Parties are disclosed, but we do not allow client refusals.",
+      "4": "Yes, all Fourth Parties are disclosed pre-contract; changes are notified in advance.",
+      "5": "Yes, all Fourth Parties are disclosed, and the client retains the right to approve or reject specific subcontractors pre-contract."
+    }
+  },
+  {
+    "id": 17,
+    "nist_control": "RC.RP-01",
+    "category": "Recover",
+    "policy_ref": "Sec 9",
+    "question": "Do you maintain a documented and regularly tested Business Continuity/Disaster Recovery (BCDR) plan?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "No, no formal plan.",
+      "2": "Yes, documented but not formally tested.",
+      "3": "Plan components verified (e.g., Call Trees, Backup Restores) but no full drill.",
+      "4": "Yes, documented and tested via tabletop exercise annually.",
+      "5": "Yes, documented and tested via full simulation annually."
+    }
+  },
+  {
+    "id": 18,
+    "nist_control": "GV.OC-03, PR.DS-11",
+    "category": "Govern, Protect",
+    "policy_ref": "Sec 9",
+    "question": "Can you guarantee that our data will remain stored and processed exclusively within specific geographic regions (Data Sovereignty)?",
+    "weight": "Medium",
+    "maturity_levels": {
+      "1": "No, data flows globally to optimize performance.",
+      "2": "We can specify a region, but failover may cross borders.",
+      "3": "Data Residency guaranteed for Storage, but processing may float.",
+      "4": "Yes, data residency is contractually guaranteed in specific major regions (e.g., EU, US).",
+      "5": "Yes, strict sovereignty guaranteed, including support staff access restrictions."
+    }
+  },
+  {
+    "id": 19,
+    "nist_control": "ID.RA-01, PR.PS-02",
+    "category": "Identify, Protect",
+    "policy_ref": "Sec 5",
+    "question": "Beyond patching, do you perform active vulnerability scanning on your infrastructure?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "No active scanning performed.",
+      "2": "Ad-hoc scanning (e.g., once a year).",
+      "3": "Quarterly scans of external-facing assets only.",
+      "4": "Monthly authenticated scans of internal and external assets.",
+      "5": "Continuous/Weekly automated scanning with auto-ticketing for remediation."
+    }
+  },
+  {
+    "id": 20,
+    "nist_control": "PR.PS-06, ID.RA-09",
+    "category": "Protect, Identify",
+    "policy_ref": "Sec 5",
+    "question": "How do you ensure the security of the software code you develop (Application Security)?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "Developers are trusted to write secure code; no testing.",
+      "2": "Peer reviews are conducted manually.",
+      "3": "Regular Automated Vulnerability Scanning of libraries and dependencies.",
+      "4": "SAST (Static Analysis) or DAST (Dynamic Analysis) is run before major releases.",
+      "5": "Automated SAST/DAST/SCA in the CI/CD pipeline; breaking builds on critical findings."
+    }
+  },
+  {
+    "id": 21,
+    "nist_control": "PR.IR-01, GV.SC-04",
+    "category": "Protect, Govern",
+    "policy_ref": "Sec 5",
+    "question": "Is the environment hosting our data logically segmented from your internal corporate networks and other customers?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "No, flat network architecture.",
+      "2": "Segmented by VLANs, but heavy traffic allowance between zones.",
+      "3": "Segmented by VLANs with Access Control Lists (ACLs) restricting traffic to business needs.",
+      "4": "Strict DMZ and separation between Production and Corporate networks.",
+      "5": "Zero Trust Architecture (Micro-segmentation) with explicit allow-listing for all flows."
+    }
+  },
+  {
+    "id": 22,
+    "nist_control": "PR.DS-11, RC.RP-03",
+    "category": "Protect, Recover",
+    "policy_ref": "Sec 9",
+    "question": "Are your backups protected against ransomware (Immutability)?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "Backups are accessible on the same network as the servers (writable).",
+      "2": "Backups are on a separate network but modifiable by admins.",
+      "3": "Cloud-based backups with separate credentials & MFA (Soft Isolation).",
+      "4": "Backups are stored offsite/offline (Tape/Air-gapped).",
+      "5": "Backups are strictly Immutable (WORM: Write Once Read Many) and cannot be deleted/modified before retention expiry."
+    }
+  },
+  {
+    "id": 23,
+    "nist_control": "DE.AE-02, PR.PS-04",
+    "category": "Detect, Protect",
+    "policy_ref": "Sec 5",
+    "question": "How are security logs collected and monitored for suspicious activity?",
+    "weight": "High",
+    "maturity_levels": {
+      "1": "Logs are local to devices and overwritten when full.",
+      "2": "Centralized logging server, reviewed only during incidents.",
+      "3": "Centralized logging with scheduled, documented manual reviews or basic reporting.",
+      "4": "SIEM is in place with automated alerting for critical events.",
+      "5": "24/7 SOC (Security Operations Centre) monitoring a SIEM with behavioural analytics."
+    }
+  },
+  {
+    "id": 24,
+    "nist_control": "PR.PS-06, GV.SC-09",
+    "category": "Protect, Govern",
+    "policy_ref": "Sec 5",
+    "question": "Do you monitor the security of open-source libraries used in your software (Software Supply Chain)?",
+    "weight": "Medium",
+    "maturity_levels": {
+      "1": "No tracking of third-party libraries.",
+      "2": "Manual tracking via spreadsheets.",
+      "3": "Automated dependency alerts like GitHub Dependabot enabled.",
+      "4": "SCA (Software Composition Analysis) tools used to identify vulnerable libraries.",
+      "5": "We maintain a dynamic SBOM (Software Bill of Materials) and automatically block vulnerable components."
+    }
+  },
+  {
+    "id": 25,
+    "nist_control": "GV.OC-03",
+    "category": "Govern",
+    "policy_ref": "Sec 8b",
+    "question": "For AI/ML features, do you use customer data to train your foundational models?",
+    "weight": "Critical",
+    "maturity_levels": {
+      "1": "Yes, customer input is used to improve public models (Opt-out difficult).",
+      "2": "Yes, but we offer an opt-out setting.",
+      "3": "Opt-In Only (Default is Private or No Training).",
+      "4": "No, by policy we do not train on customer data, but it is not contractually guaranteed.",
+      "5": "No, we have a contractual guarantee (DPA) that customer data is isolated and never used for model training."
+    }
+  }
+]
+

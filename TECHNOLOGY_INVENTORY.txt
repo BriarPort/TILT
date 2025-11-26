@@ -1,0 +1,516 @@
+TILT Technology Inventory
+===========================
+
+Complete list of technologies, frameworks, libraries, and important choices used in this project. Grouped by category for easy reference.
+
+=========================================
+1. FRONTEND STACK
+=========================================
+
+React 18.2.0
+- Main frontend framework
+- Component based architecture
+- Functional components with hooks
+- No class components, hooks only
+
+React DOM 18.2.0
+- React rendering for web browsers
+- Standard React web dependency
+
+Vite 5.0.8
+- Build tool and development server
+- Fast HMR hot module replacement
+- ES modules by default
+- Replaces Create React App or Webpack
+- Dev server on port 3000
+
+JavaScript ES6+
+- Modern JavaScript features
+- ES modules import export
+- Arrow functions, destructuring, async await
+- No TypeScript, plain JavaScript
+
+JSX
+- React component syntax
+- HTML like syntax in JavaScript
+- Transpiled by Vite
+
+=========================================
+2. BACKEND STACK
+=========================================
+
+Python 3.12+
+- Backend programming language
+- Type hints used but not enforced
+- Standard library plus third party packages
+
+FastAPI 0.104.1
+- Modern Python web framework
+- REST API endpoints
+- Automatic OpenAPI documentation
+- Pydantic models for validation
+- Async support though not heavily used
+
+Uvicorn 0.24.0
+- ASGI server for FastAPI
+- Runs on port 8000
+- Standard variant with all features
+- Handles HTTP requests and WebSocket support
+
+Pydantic 2.5.0
+- Data validation library
+- Request response models
+- Type checking and validation
+- Used for API request response schemas
+
+=========================================
+3. DATABASE
+=========================================
+
+SQLite3
+- Embedded database engine
+- Single file database tilt_data.db
+- No separate database server required
+- Python sqlite3 standard library
+- SQLCipher planned but not implemented
+
+Database Schema
+- vendors table for vendor data
+- questions table for standard assessment questions
+- cloud_criteria table for cloud scorecard criteria
+- settings table for application settings
+- Migrations handled in database.py
+
+=========================================
+4. SECURITY & AUTHENTICATION
+=========================================
+
+Argon2
+- Password hashing algorithm
+- Via passlib library with argon2 backend
+- Resists GPU cracking attacks
+- Industry standard for password hashing
+- Hash stored in .tilt_key file
+
+Master Password System
+- Single password protects entire database
+- Required for all API operations
+- No password recovery by design
+- Password verification on every request
+- Stored as Argon2 hash, not plaintext
+
+CORS Middleware
+- Cross origin resource sharing
+- Allows localhost:3000 to access localhost:8000
+- Development only configuration
+- Should be restricted in production
+
+=========================================
+5. STYLING & UI
+=========================================
+
+Tailwind CSS 3.4.0
+- Utility first CSS framework
+- No custom CSS files needed
+- Responsive design utilities
+- Custom configuration in tailwind.config.js
+
+PostCSS 8.4.32
+- CSS processing tool
+- Used by Tailwind for transformations
+- Autoprefixer integration
+
+Autoprefixer 10.4.16
+- Automatic vendor prefixes
+- Browser compatibility
+- Integrated with PostCSS
+
+Custom Fonts
+- Poppins from Google Fonts
+- Poppins Black for main headings
+- Poppins Thin for section titles and labels
+- Poppins Regular for default body text
+- Font files in Poppins Fonts directory
+- Applied via @font-face in index.css
+
+Lucide React 0.344.0
+- Icon library
+- React components for icons
+- Used for UI icons like Save, X, AlertTriangle
+
+=========================================
+6. OSINT & SECURITY CHECKS
+=========================================
+
+Requests 2.31.0
+- HTTP library for Python
+- Fetches ransomware list from GitHub
+- Handles JSON responses
+- Timeout and error handling
+
+dnspython 2.4.2
+- DNS query library
+- DMARC record lookups
+- TXT record parsing
+- DNS resolver functionality
+
+SSL/TLS Validation
+- Python standard library ssl module
+- Python standard library socket module
+- Certificate expiration checking
+- TLS handshake validation
+- Port 443 connections
+
+Ransomwatch GitHub
+- External data source
+- Free open source ransomware leak database
+- JSON API endpoint
+- No authentication required
+
+DNS Protocol
+- Standard DNS queries
+- TXT record lookups for DMARC
+- Public DNS resolution
+- No special DNS servers required
+
+=========================================
+7. DATA FORMATS
+=========================================
+
+JSON
+- Question templates in JSON files
+- API request response format
+- Database storage for complex data
+- OSINT results storage
+- Vendor answers and scores
+
+SQL
+- Database queries
+- Standard SQL syntax
+- SQLite specific features
+- Parameterized queries for security
+
+CSV
+- Not currently used
+- Potential for future export functionality
+
+=========================================
+8. BUILD & DEVELOPMENT TOOLS
+=========================================
+
+Vite Build
+- Production build tool
+- Bundles React app
+- Outputs to dist directory
+- Optimized for production
+
+Node.js
+- JavaScript runtime
+- Required for frontend development
+- npm package manager
+- Version not specified, modern version assumed
+
+npm
+- Node package manager
+- Installs frontend dependencies
+- package.json for dependency management
+- package-lock.json for version locking
+
+Python Virtual Environment
+- venv module for isolation
+- backend/venv directory
+- Isolated Python dependencies
+- requirements.txt for dependencies
+
+Bash Scripts
+- run.sh startup script
+- Handles environment setup
+- Starts both frontend and backend
+- Linux shell scripting
+
+=========================================
+9. ARCHITECTURE PATTERNS
+=========================================
+
+REST API
+- Representational state transfer
+- HTTP methods GET POST PUT DELETE
+- JSON request response format
+- Stateless API design
+
+Component Based Architecture
+- React functional components
+- Props for data passing
+- Hooks for state management
+- Reusable component library
+
+Separation of Concerns
+- Frontend handles UI only
+- Backend handles business logic
+- Database handles data persistence
+- Clear API boundaries
+
+Client Server Architecture
+- React frontend as client
+- FastAPI backend as server
+- Communication over localhost
+- No server side rendering
+
+=========================================
+10. STATE MANAGEMENT
+=========================================
+
+React Hooks
+- useState for component state
+- useEffect for side effects
+- No external state management library
+- Props drilling for data passing
+- Local component state only
+
+No Redux or Context API
+- Simple state management
+- Props passed down from App.jsx
+- Local state in components
+- No global state store
+
+=========================================
+11. API COMMUNICATION
+=========================================
+
+Fetch API
+- Native browser fetch function
+- No axios or other HTTP library
+- Promise based async requests
+- Error handling with try catch
+
+REST Endpoints
+- /api/vendors for vendor CRUD
+- /api/assessment/calculate for risk calculations
+- /api/osint/scan for security checks
+- /api/questions for question management
+- /api/settings for application settings
+
+CORS Configuration
+- Development only CORS
+- Allows localhost:3000 origin
+- Credentials allowed
+- All methods and headers allowed
+
+=========================================
+12. FILE STRUCTURE
+=========================================
+
+Frontend Structure
+- src/components for React components
+- src/utils for utility functions
+- src/api.js for API client
+- index.html entry point
+- vite.config.js build configuration
+
+Backend Structure
+- main.py FastAPI application
+- database.py database operations
+- risk_calculator.py risk calculations
+- osint_service.py security checks
+- data/ directory for JSON templates
+
+=========================================
+13. DEPENDENCY MANAGEMENT
+=========================================
+
+Frontend Dependencies
+- package.json for Node dependencies
+- package-lock.json for exact versions
+- npm install for installation
+- Dev dependencies separate from production
+
+Backend Dependencies
+- requirements.txt for Python packages
+- pip install for installation
+- Virtual environment isolation
+- No version pinning beyond major versions
+
+=========================================
+14. CONFIGURATION FILES
+=========================================
+
+Frontend Configuration
+- vite.config.js Vite build config
+- tailwind.config.js Tailwind CSS config
+- postcss.config.js PostCSS config
+- package.json npm config
+
+Backend Configuration
+- requirements.txt Python dependencies
+- No separate config files
+- Hardcoded constants in code
+- Environment variables not used
+
+=========================================
+15. TESTING & QUALITY
+=========================================
+
+No Testing Framework
+- No unit tests
+- No integration tests
+- No test runners configured
+- Manual testing only
+
+No Linting
+- No ESLint for JavaScript
+- No Pylint for Python
+- No code formatting tools
+- Manual code review
+
+=========================================
+16. DEPLOYMENT & HOSTING
+=========================================
+
+Local Development Only
+- localhost:3000 for frontend
+- localhost:8000 for backend
+- No production deployment config
+- No Docker containers
+- No cloud hosting setup
+
+Single User Application
+- No multi user support
+- No session management
+- No JWT tokens
+- Master password authentication only
+
+=========================================
+17. DATA SOURCES
+=========================================
+
+Internal Data
+- SQLite database
+- JSON question templates
+- User entered vendor data
+- Calculated risk scores
+
+External Data
+- Ransomwatch GitHub repository
+- Public DNS records
+- SSL certificate information
+- No paid API services
+
+=========================================
+18. BROWSER COMPATIBILITY
+=========================================
+
+Modern Browsers
+- ES6+ JavaScript features
+- Fetch API support required
+- No Internet Explorer support
+- Chrome Firefox Safari Edge supported
+
+No Polyfills
+- Native browser APIs only
+- No compatibility layers
+- Modern JavaScript features assumed
+
+=========================================
+19. PERFORMANCE OPTIMIZATIONS
+=========================================
+
+Caching
+- OSINT results cached in memory
+- Ransomware list cached to file
+- 24 hour cache for ransomware
+- 5 minute cache for SSL and DMARC
+
+Rate Limiting
+- 500ms delay between OSINT checks
+- Prevents API abuse
+- Respects external service limits
+
+No Code Splitting
+- Single bundle for frontend
+- All components loaded at once
+- No lazy loading implemented
+
+=========================================
+20. FUTURE CONSIDERATIONS
+=========================================
+
+Planned but Not Implemented
+- SQLCipher for database encryption
+- PDF report generation
+- CSV export functionality
+- Scheduled OSINT scans
+- Multi user support
+- JWT or session authentication
+- Unit and integration tests
+- Docker containerization
+- Production deployment config
+
+Potential Additions
+- TypeScript migration
+- State management library Redux or Zustand
+- Testing framework Jest or Vitest
+- Linting ESLint and Pylint
+- Code formatting Prettier and Black
+- CI/CD pipeline
+- Environment variable management
+- Logging framework
+- Error tracking service
+
+=========================================
+21. VERSION CONTROL
+=========================================
+
+Git
+- Standard version control
+- .gitignore for exclusions
+- No specific Git workflow defined
+- No branching strategy documented
+
+=========================================
+22. DOCUMENTATION
+=========================================
+
+Text Files
+- Markdown for structured docs
+- Plain text for casual docs
+- No automated documentation
+- Manual documentation only
+
+Documentation Files
+- GITHUB_DESCRIPTION.txt project overview
+- OSINT_CHECKS_DOCUMENTATION.txt OSINT details
+- RISK_MATRIX_ALGORITHM.txt risk calculations
+- LINUX_SETUP.md setup instructions
+- PROJECT_SUMMARY.md formal overview
+- TECHNOLOGY_INVENTORY.txt this file
+
+=========================================
+23. SUMMARY
+=========================================
+
+Core Stack
+- React + Vite frontend
+- Python + FastAPI backend
+- SQLite database
+- Argon2 password hashing
+
+Key Libraries
+- Tailwind CSS for styling
+- Pydantic for validation
+- dnspython for DNS
+- requests for HTTP
+
+Architecture
+- REST API communication
+- Component based React
+- Client server separation
+- Local development only
+
+Security
+- Master password system
+- Argon2 password hashing
+- SQLite with password protection
+- No encryption at rest yet
+
+Thats the complete technology inventory. Everything used in this project, grouped by category for easy reference.
+
