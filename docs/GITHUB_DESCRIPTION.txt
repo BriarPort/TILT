@@ -24,7 +24,9 @@ How It Works
 
 The application has two parts. The backend is FastAPI running on Python, handling database operations and risk calculations. The frontend is React with Vite, providing the user interface. They communicate over localhost using a REST API.
 
-When you add a vendor, you can choose between two assessment types. Standard assessment is a 25 question maturity based questionnaire aligned with NIST CSF 2.0. Cloud scorecard is a quick 11 question assessment for mass market cloud services like AWS or GitHub.
+When you add a vendor, you can choose between two assessment types. Standard assessment is a 25 question maturity based questionnaire aligned with NIST CSF 2.0. Cloud scorecard is a quick 11 criterion assessment for mass market cloud services like AWS or GitHub, with maturity based scoring from 0 to 5 per criterion.
+
+You can add, edit, and manage assessment questions and cloud criteria through dedicated editor pages. Each question and criterion can include maturity level descriptions and notes visible only on the editing pages.
 
 The app calculates three scores for each vendor. Impact is based on data classification tier, 1 to 5. Likelihood is based on assessment answers, also 1 to 5. Vulnerability is a percentage from 0 to 100, based on how well they answered security questions.
 
@@ -97,16 +99,22 @@ Background uses a gradient to show risk zones. Bottom left is green for low risk
 
 Risk score is Impact times Likelihood. Scores 20 and above are critical, 12 to 19 are high, 6 to 11 are medium, below 6 is low. The colour coding makes it easy to spot high risk vendors at a glance.
 
-Vendors with OSINT warnings appear first in the dashboard, prioritised for review. Ransomware warnings get highest priority because those indicate active security incidents. Warnings can be acknowledged to indicate theyve been reviewed by the risk team.
+Vendors with OSINT warnings appear first in the dashboard, prioritised for review. Ransomware warnings get highest priority because those indicate active security incidents. Warnings can be acknowledged on the vendor detail page to indicate theyve been reviewed by the risk team. Once acknowledged, detailed warning text is replaced with a brief message to reduce UI clutter.
+
+You can view full vendor assessment details, edit assessments, and delete vendors from the vendor detail page or settings page. Vendor deletion is permanent and cannot be undone.
 
 File Structure
 ==============
 
-frontend/ contains the React application. Components are in src/components/, API client is in src/api.js, risk calculation logic is in src/utils/riskCalculator.js.
+frontend/ contains the React application. Components are in src/components/ including Dashboard, RiskMatrix, VendorCard, AddVendorForm, ViewVendor, QuestionEditor, CloudMatrixEditor, and others. API client is in src/api.js, risk calculation logic is in src/utils/riskCalculator.js.
 
 backend/ contains the FastAPI application. main.py has the REST endpoints, database.py handles database operations, risk_calculator.py does the math, osint_service.py runs the security checks.
 
-data/ contains question templates in JSON format. questions_standard.json has the 25 standard questions, questions_cloud.json has the cloud scorecard criteria.
+backend/data/ contains question templates in JSON format. questions_standard.json has the 25 standard questions, questions_cloud.json has the 11 cloud scorecard criteria.
+
+docs/ contains documentation files including this file, OSINT checks documentation, risk matrix algorithm, technology inventory, and setup instructions.
+
+fonts/ contains custom Poppins font files (Black, Regular, Thin variants).
 
 tilt_data.db is the SQLite database. This is where all vendor data, assessments, and settings are stored. Protected by master password.
 

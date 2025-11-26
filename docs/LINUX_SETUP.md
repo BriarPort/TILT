@@ -4,7 +4,7 @@ This guide explains how to set up and run the TILT Dashboard on Linux.
 
 ## Prerequisites
 
-- **Python 3.8+** (check with `python3 --version`)
+- **Python 3.12+** (check with `python3 --version`)
 - **Node.js 16+** and npm (check with `node --version` and `npm --version`)
 - **Linux** (tested on Ubuntu/Debian, should work on other distros)
 

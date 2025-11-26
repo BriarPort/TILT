@@ -75,9 +75,9 @@ SQLite3
 - SQLCipher planned but not implemented
 
 Database Schema
-- vendors table for vendor data
-- questions table for standard assessment questions
-- cloud_criteria table for cloud scorecard criteria
+- vendors table for vendor data, OSINT results, and acknowledgment status
+- questions table for standard assessment questions with maturity levels and notes
+- cloud_criteria table for cloud scorecard criteria with maturity levels and notes
 - settings table for application settings
 - Migrations handled in database.py
 
@@ -130,7 +130,7 @@ Custom Fonts
 - Poppins Black for main headings
 - Poppins Thin for section titles and labels
 - Poppins Regular for default body text
-- Font files in Poppins Fonts directory
+- Font files in fonts directory
 - Applied via @font-face in index.css
 
 Lucide React 0.344.0
@@ -243,6 +243,8 @@ Component Based Architecture
 - Props for data passing
 - Hooks for state management
 - Reusable component library
+- QuestionEditor and CloudMatrixEditor for managing assessment questions and criteria
+- ViewVendor component for viewing and managing vendor details including OSINT acknowledgment
 
 Separation of Concerns
 - Frontend handles UI only
@@ -301,8 +303,8 @@ CORS Configuration
 =========================================
 
 Frontend Structure
-- src/components for React components
-- src/utils for utility functions
+- src/components for React components (Dashboard, RiskMatrix, VendorCard, AddVendorForm, ViewVendor, QuestionEditor, CloudMatrixEditor, SettingsPage, OSINTPage, etc.)
+- src/utils for utility functions (riskCalculator.js)
 - src/api.js for API client
 - index.html entry point
 - vite.config.js build configuration
@@ -312,7 +314,7 @@ Backend Structure
 - database.py database operations
 - risk_calculator.py risk calculations
 - osint_service.py security checks
-- data/ directory for JSON templates
+- data/ directory for JSON templates (questions_standard.json, questions_cloud.json)
 
 =========================================
 13. DEPENDENCY MANAGEMENT
