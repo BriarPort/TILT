@@ -80,13 +80,13 @@ export default function App() {
     try {
       // Get organisation name from settings
       const settings = await api.getSettings();
-      if (settings.orgName) {
+      if (settings && settings.orgName) {
         setOrgName(settings.orgName);
       }
 
       // Get all vendors from the database
       const vendorsData = await api.getVendors();
-      setVendors(vendorsData);
+      setVendors(Array.isArray(vendorsData) ? vendorsData : []);
 
       // Get all assessment questions
       const questionsData = await api.getQuestions();
@@ -433,7 +433,7 @@ export default function App() {
             {/* Welcome heading uses Poppins Black in all caps */}
             <h1 className="text-3xl font-light text-gray-600 font-poppins-black">WELCOME BACK!</h1>
             {/* Organisation name uses Poppins Thin in all caps */}
-            <h2 className="text-4xl font-bold text-gray-900 tracking-tight font-poppins-thin">{orgName.toUpperCase()}</h2>
+            <h2 className="text-4xl font-bold text-gray-900 tracking-tight font-poppins-thin">{(orgName || 'Your Organisation').toUpperCase()}</h2>
           </div>
           {/* Search bar placeholder (not functional yet) */}
           <div className="bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm flex items-center gap-2 text-gray-400">

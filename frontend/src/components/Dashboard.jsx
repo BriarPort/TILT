@@ -4,7 +4,7 @@ import VendorCard from './VendorCard';
 
 // Main dashboard component that shows the risk matrix and vendor cards
 // Vendors are sorted with flagged vendors (OSINT warnings, ransomware, etc.) at the top
-export default function Dashboard({ vendors, onVendorClick }) {
+export default function Dashboard({ vendors = [], onVendorClick }) {
   return (
     <div className="flex flex-col h-full gap-6">
       {/* Top section with the risk matrix visualization */}

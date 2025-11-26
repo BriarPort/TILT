@@ -212,12 +212,6 @@ See `MIGRATION_SUMMARY.md` for detailed migration notes.
 ## Typography & Fonts
 
 ### Poppins
-- **Source**: Google Fonts (via GitHub)
-- **Usage**: Default body font throughout the application
-- **License**: Open Font License (OFL)
-- **Attribution**: Poppins font family designed by Indian Type Foundry
-- **Location**: Font files stored in `/Poppin Fonts/` directory
-
 ### Poppins
 - **Usage**: Used for all text including headings and UI elements
 - **Variants Used**: 

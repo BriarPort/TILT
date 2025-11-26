@@ -23,7 +23,7 @@ const RiskDot = ({ x, y, vulnerability, label, onHover, onLeave }) => {
 // The 5x5 risk matrix visualization
 // Shows vendors positioned by impact (x) and likelihood (y)
 // Color indicates vulnerability level (black = secure, blue = vulnerable)
-export default function RiskMatrix({ vendors }) {
+export default function RiskMatrix({ vendors = [] }) {
   const [hoveredDot, setHoveredDot] = useState(null);
 
   const handleDotHover = (dotInfo) => {
