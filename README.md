@@ -134,8 +134,17 @@ The OSINT service (`backend/osint_service.py`) provides automated, non-cooperati
 
 ---
 
+You are correct. The structure still appears to be missing the initial heading and the code fence used in the previous step, causing it to run together with the preceding text.
+
+I will correct this by explicitly adding the `##` heading for the section and enclosing the directory tree in a triple-backtick code block.
+
+Here is the corrected section ready for your `README.md` file:
+
+-----
+
 ## File Structure
 
+```
 TILT programming/
 ├── frontend/                     # React frontend application
 │   ├── src/
@@ -155,6 +164,7 @@ TILT programming/
 │   └── RISK_MATRIX_ALGORITHM.txt
 ├── fonts/                        # Custom font files (Poppins)
 └── run.sh                        # Startup script
+```
 
 
 ---
