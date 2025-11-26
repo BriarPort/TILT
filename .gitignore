@@ -42,6 +42,8 @@ tilt_data.db
 .env
 .npmrc
 *.log
+.tilt_key
+backend/.tilt_key
 
 ######################
 # 3. OPERATING SYSTEM & IDEs
