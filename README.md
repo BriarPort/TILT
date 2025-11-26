@@ -1,5 +1,3 @@
-<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
 # TILT Dashboard (The Inherited Liability Toolkit)
 
 ## Project Overview
@@ -137,7 +135,6 @@ The OSINT service (`backend/osint_service.py`) provides automated, non-cooperati
 ---
 
 ## File Structure
-
 
 TILT programming/
 ├── frontend/                     # React frontend application
