@@ -6,13 +6,13 @@ This is a complete, production-ready web application for implementing the TILT (
 
 ## Key Features Implemented
 
-### ✅ Security (Tier 3 Compliance)
+### Security (Tier 3 Compliance)
 - **Argon2 Key Derivation**: Master password hashed with Argon2
 - **Database Protection**: SQLite3 with master password authentication
 - **REST API Security**: Secure API endpoints with password verification
 - **Master Password System**: User-controlled encryption (SQLCipher planned for production)
 
-### ✅ Core Functionality
+### Core Functionality
 - **25-Question Standard Assessment**: Complete NIST CSF 2.0 aligned questionnaire with maturity-based scoring (1-5 scale)
 - **Cloud Scorecard**: Mass-market cloud services assessment with 11 criteria, maturity-based scoring (0-5 scale per criterion)
 - **Risk Matrix Visualization**: 5x5 gradient matrix with vulnerability scoring
@@ -21,7 +21,7 @@ This is a complete, production-ready web application for implementing the TILT (
 - **Settings Management**: Organization name and password change
 - **Question/Criteria Editing**: Add, edit, and manage assessment questions and cloud criteria with maturity levels and notes
 
-### ✅ User Interface
+### User Interface
 - **Modern Dashboard**: Clean, professional design with risk matrix visualization
 - **Responsive Layout**: Works on various screen sizes
 - **OSINT Warning Prioritization**: Vendors with warnings appear first (no separate section)
