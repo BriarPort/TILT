@@ -1,6 +1,5 @@
+<img width="2764" height="1703" alt="tilt" src="https://github.com/user-attachments/assets/670163f7-112c-4792-9e57-e41b3ca9eaaf" />
 
-<img width="3334" height="3334" alt="The Inherited Liability Toolkit-06" src="https://github.com/user-attachments/assets/9a874281-a66c-4d98-ac7a-9f3fee50aaf5" />
-<img width="3334" height="3334" alt="The Inherited Liability Toolkit-10" src="https://github.com/user-attachments/assets/605cad7a-5656-4747-abb6-b4fe5e6e726c" />
 
 ## Project Overview
 
